@@ -21,3 +21,12 @@ dist-ssr
 *.sln
 *.sw?
 .env
+# Dependencies
+node_modules/
+
+# Environment files
+.env
+**/.env
+
+# Local config
+.vscode/

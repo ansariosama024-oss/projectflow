@@ -35,7 +35,7 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 // Rate limiting
-app.use('/api', apiLimiter);
+// app.use('/api', apiLimiter);
 
 // Routes
 app.use('/api', routes);

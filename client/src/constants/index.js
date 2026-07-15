@@ -71,6 +71,27 @@ export const PROJECT_CATEGORY_OPTIONS = [
   { value: 'other', label: 'Other' },
 ];
 
+export const TEAM_ROLE_OPTIONS = [
+  { value: "Project Manager", label: "Project Manager" },
+  { value: "Frontend Developer", label: "Frontend Developer" },
+  { value: "Backend Developer", label: "Backend Developer" },
+  { value: "Full Stack Developer", label: "Full Stack Developer" },
+  { value: "UI/UX Designer", label: "UI/UX Designer" },
+  { value: "QA Engineer", label: "QA Engineer" },
+];
+
+export const TEAM_DEPARTMENT_OPTIONS = [
+  { value: "Development", label: "Development" },
+  { value: "Design", label: "Design" },
+  { value: "Testing", label: "Testing" },
+  { value: "Management", label: "Management" },
+];
+
+export const TEAM_STATUS_OPTIONS = [
+  { value: "Active", label: "Active" },
+  { value: "Inactive", label: "Inactive" },
+];
+
 export const STORAGE_KEYS = {
   TOKEN: 'pf_token',
   USER: 'pf_user',
