@@ -25,12 +25,16 @@ const CalendarEventModal = ({ event, onClose }) => {
 
         <div>
           <strong>Date:</strong>
-          <p>{new Date(event.start).toLocaleDateString()}</p>
+          <p>
+  {event.start instanceof Date && !isNaN(event.start)
+    ? event.start.toLocaleDateString()
+    : "No date"}
+</p>
         </div>
 
         <div>
           <strong>Status:</strong>
-          <p>{item.status}</p>
+          <p>{item.status || "-"}</p>
         </div>
 
         {item.priority && (

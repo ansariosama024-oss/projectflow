@@ -15,7 +15,10 @@ export const createTask = asyncHandler(async (req, res) => {
     dueDate,
   } = req.body;
 
-  const projectExists = await Project.findById(project);
+ const projectExists = await Project.findOne({
+  _id: project,
+  createdBy: req.user._id,
+});
 
   if (!projectExists) {
     throw new AppError("Project not found", 404);
@@ -82,9 +85,29 @@ export const updateTask = asyncHandler(async (req, res) => {
     throw new AppError("Task not found", 404);
   }
 
-  Object.assign(task, req.body);
+  if (task.createdBy.toString() !== req.user._id.toString()) {
+  throw new AppError("Not authorized to update this task", 403);
+}
 
+const allowedFields = [
+  "title",
+  "description",
+  "project",
+  "assignedTo",
+  "status",
+  "priority",
+  "dueDate",
+];
+
+allowedFields.forEach((field) => {
+  if (field in req.body) {
+    task[field] = req.body[field];
+  }
+});
   await task.save();
+  await task.populate("project", "name");
+await task.populate("assignedTo", "name email");
+await task.populate("createdBy", "name");
 
   res.json({
     success: true,
@@ -96,6 +119,10 @@ export const updateTask = asyncHandler(async (req, res) => {
 // Delete Task
 export const deleteTask = asyncHandler(async (req, res) => {
   const task = await Task.findById(req.params.id);
+
+  if (task.createdBy.toString() !== req.user._id.toString()) {
+  throw new AppError("Not authorized to delete this task", 403);
+}
 
   if (!task) {
     throw new AppError("Task not found", 404);

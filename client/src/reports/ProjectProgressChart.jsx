@@ -8,14 +8,14 @@ import {
 } from "recharts";
 
 const ProjectProgressChart = ({ projects, tasks }) => {
-    console.log(tasks[0]);
+    
   const data = projects.map((project) => {
     const projectTasks = tasks.filter(
       (task) => task.project?._id === project._id
     );
 
     const completedTasks = projectTasks.filter(
-  (task) => task.status === "done"
+   (task) => task.status?.trim().toLowerCase() === "done"
 );
 
     const progress =

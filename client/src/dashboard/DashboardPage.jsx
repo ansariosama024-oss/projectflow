@@ -25,7 +25,6 @@ import { projectService } from '../services/projectService';
 import { useTheme } from '../context/ThemeContext';
 import {
   PROJECT_STATUS_OPTIONS,
-  PROJECT_PRIORITY_OPTIONS,
 } from '../constants';
 import { formatDate, getInitials, cn } from '../utils';
 

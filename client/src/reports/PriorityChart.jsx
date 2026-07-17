@@ -9,19 +9,25 @@ import {
 
 const PriorityChart = ({ tasks }) => {
   const data = [
-    {
-      priority: "Low",
-      count: tasks.filter((t) => t.priority === "low").length,
-    },
-    {
-      priority: "Medium",
-      count: tasks.filter((t) => t.priority === "medium").length,
-    },
-    {
-      priority: "High",
-      count: tasks.filter((t) => t.priority === "high").length,
-    },
-  ];
+  {
+    priority: "Low",
+    count: tasks.filter(
+      (t) => t.priority?.trim().toLowerCase() === "low"
+    ).length,
+  },
+  {
+    priority: "Medium",
+    count: tasks.filter(
+      (t) => t.priority?.trim().toLowerCase() === "medium"
+    ).length,
+  },
+  {
+    priority: "High",
+    count: tasks.filter(
+      (t) => t.priority?.trim().toLowerCase() === "high"
+    ).length,
+  },
+];
 
   return (
     <div className="rounded-xl bg-white p-6 shadow dark:bg-neutral-900">

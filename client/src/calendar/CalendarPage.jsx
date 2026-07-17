@@ -1,3 +1,7 @@
+import {
+  LoadingSpinner,
+  ErrorState,
+} from "../components/common";
 import CalendarSidebar from "./CalendarSidebar";
 import CalendarLegend from "./CalendarLegend";
 import CalendarEventModal from "./CalendarEventModal";
@@ -28,9 +32,12 @@ const CalendarPage = () => {
   const [projects, setProjects] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   const loadData = async () => {
+    setLoading(true);
+  setError(false);
     try {
       const [projectRes, taskRes] = await Promise.all([
         projectService.getAll(),
@@ -41,6 +48,7 @@ const CalendarPage = () => {
       setTasks(taskRes.data || []);
     } catch (err) {
       console.error(err);
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -51,7 +59,9 @@ const CalendarPage = () => {
   }, []);
 
   const events = useMemo(() => {
-  const projectEvents = projects.map((project) => ({
+  const projectEvents = projects
+  .filter((project) => project.deadline)  
+  .map((project) => ({
     id: project._id,
     title: `📁 ${project.name}`,
     start: new Date(project.deadline),

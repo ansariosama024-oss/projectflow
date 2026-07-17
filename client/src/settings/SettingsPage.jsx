@@ -1,12 +1,28 @@
-import PagePlaceholder from '../components/common/PagePlaceholder';
-import { FiSettings } from 'react-icons/fi';
 
-const SettingsPage = () => (
-  <PagePlaceholder
-    title="Settings"
-    description="Manage your profile, preferences, and workspace configuration."
-    icon={FiSettings}
-  />
-);
+import ProfileSettings from "./ProfileSettings";
+import SecuritySettings from "./SecuritySettings";
+import AppearanceSettings from "./AppearanceSettings";
+import NotificationSettings from "./NotificationSettings";
+
+const SettingsPage = () => {
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold">Settings</h1>
+        <p className="text-neutral-500">
+          Manage your account preferences and security.
+        </p>
+      </div>
+
+      <ProfileSettings />
+
+      <SecuritySettings />
+
+      <AppearanceSettings />
+
+      <NotificationSettings />
+    </div>
+  );
+};
 
 export default SettingsPage;

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import ConfirmModal from "../components/ui/ConfirmModal";
 import {
   FiPlus,
   FiSearch,
@@ -32,6 +33,9 @@ const sortOptions = [
 ];
 
 const ProjectsPage = () => {
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+const [selectedProject, setSelectedProject] = useState(null);
+const [deleting, setDeleting] = useState(false);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -119,21 +123,30 @@ const ProjectsPage = () => {
     }
   };
 
-  const handleDelete = async () => {
-    if (!deleteTarget) return;
-    setDeleteLoading(true);
-    try {
-      await projectService.delete(deleteTarget._id);
-      setProjects((prev) => prev.filter((p) => p._id !== deleteTarget._id));
-      setPagination((prev) => ({ ...prev, total: prev.total - 1 }));
-      toast.success('Project deleted successfully');
-      setDeleteTarget(null);
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to delete project');
-    } finally {
-      setDeleteLoading(false);
-    }
-  };
+const handleDeleteProject = async () => {
+  if (!selectedProject) return;
+
+  try {
+    setDeleting(true);
+
+    // await projectService.deleteProject(selectedProject._id);
+    await projectService.delete(selectedProject._id);
+
+    toast.success("Project deleted successfully");
+
+    setProjects((prev) =>
+      prev.filter((p) => p._id !== selectedProject._id)
+    );
+
+    setShowDeleteModal(false);
+    setSelectedProject(null);
+  } catch (error) {
+    console.error(error);
+    toast.error("Failed to delete project");
+  } finally {
+    setDeleting(false);
+  }
+};
 
   const hasFilters = search || statusFilter || priorityFilter;
 
@@ -218,7 +231,10 @@ const ProjectsPage = () => {
               project={p}
               index={i}
               onEdit={handleEdit}
-              onDelete={setDeleteTarget}
+             onDelete={(project) => {
+  setSelectedProject(project);
+  setShowDeleteModal(true);
+}}
             />
           ))}
         </div>
@@ -266,7 +282,11 @@ const ProjectsPage = () => {
                           <button onClick={() => handleEdit(p)} className="rounded-md p-1.5 text-neutral-400 hover:bg-neutral-100 hover:text-primary-600 dark:hover:bg-neutral-700">
                             <FiEdit2 className="h-4 w-4" />
                           </button>
-                          <button onClick={() => setDeleteTarget(p)} className="rounded-md p-1.5 text-neutral-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20">
+                          <button onClick={() => {
+  setSelectedProject(p);
+  setShowDeleteModal(true);
+}}
+className="rounded-md p-1.5 text-neutral-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20">
                             <FiTrash2 className="h-4 w-4" />
                           </button>
                         </div>
@@ -317,24 +337,51 @@ const ProjectsPage = () => {
       />
 
       {/* Delete Confirmation */}
-      <Modal
-        isOpen={Boolean(deleteTarget)}
-        onClose={() => setDeleteTarget(null)}
-        title="Delete Project"
-        size="sm"
-        footer={
-          <>
-            <Button variant="outline" onClick={() => setDeleteTarget(null)}>Cancel</Button>
-            <Button variant="danger" loading={deleteLoading} onClick={handleDelete}>Delete</Button>
-          </>
-        }
+      {/* Delete Confirmation */}
+{/* <Modal
+  isOpen={Boolean(deleteTarget)}
+  onClose={() => setDeleteTarget(null)}
+  title="Delete Project"
+  size="sm"
+  footer={
+    <>
+      <Button
+        variant="outline"
+        onClick={() => setDeleteTarget(null)}
       >
-        <p className="text-sm text-neutral-600 dark:text-neutral-400">
-          Are you sure you want to delete{' '}
-          <span className="font-semibold text-neutral-900 dark:text-white">{deleteTarget?.name}</span>?
-          This action cannot be undone.
-        </p>
-      </Modal>
+        Cancel
+      </Button>
+
+      <Button
+        variant="danger"
+        loading={deleteLoading}
+        onClick={handleDeleteProject}
+      >
+        Delete
+      </Button>
+    </>
+  }
+>
+  <p className="text-sm text-neutral-600 dark:text-neutral-400">
+    Are you sure you want to delete{" "}
+    <span className="font-semibold">
+      {deleteTarget?.name}
+    </span>
+    ? This action cannot be undone.
+  </p>
+</Modal> */}
+      <ConfirmModal
+  isOpen={showDeleteModal}
+  title="Delete Project"
+  message={`Are you sure you want to delete "${selectedProject?.name}"? This action cannot be undone.`}
+  confirmText="Delete"
+  loading={deleting}
+  onConfirm={handleDeleteProject}
+  onCancel={() => {
+    setShowDeleteModal(false);
+    setSelectedProject(null);
+  }}
+/>
     </div>
   );
 };

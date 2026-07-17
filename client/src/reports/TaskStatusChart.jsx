@@ -9,8 +9,7 @@ import {
 
 const COLORS = ["#3b82f6", "#f59e0b", "#22c55e"];
 const TaskStatusChart = ({ tasks }) => {
-    console.log(tasks[0]);
-    console.log(tasks.map(task => task.status));
+
 const data = [
   {
     name: "Todo",
@@ -31,7 +30,6 @@ const data = [
   ).length,
 },
 ];
-console.log(data);
   return (
     <div className="rounded-xl bg-white p-6 shadow dark:bg-neutral-900">
       <h2 className="mb-4 text-lg font-semibold">

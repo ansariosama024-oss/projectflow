@@ -7,4 +7,9 @@ export const authService = {
   resetPassword: (payload) => api.post('/auth/reset-password', payload),
   getProfile: () => api.get('/auth/me'),
   updateProfile: (payload) => api.put('/auth/me', payload),
+  changePassword: (payload) =>
+  api.put("/auth/change-password", payload),
 };
+
+
+

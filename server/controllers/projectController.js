@@ -120,6 +120,24 @@ export const updateProject = asyncHandler(async (req, res) => {
     project[key] = updates[key];
   });
 
+  const allowedFields = [
+  "name",
+  "description",
+  "category",
+  "status",
+  "priority",
+  "startDate",
+  "deadline",
+  "progress",
+  "teamMembers",
+];
+
+allowedFields.forEach((field) => {
+  if (field in req.body) {
+    project[field] = req.body[field];
+  }
+});
+
   await project.save();
   await project.populate('teamMembers', 'name email avatar');
   await project.populate('createdBy', 'name email');

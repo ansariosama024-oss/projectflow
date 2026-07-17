@@ -39,6 +39,24 @@ const userSchema = new mongoose.Schema(
       enum: ['admin', 'manager', 'member'],
       default: 'member',
     },
+    notificationSettings: {
+  emailNotifications: {
+    type: Boolean,
+    default: true,
+  },
+  projectUpdates: {
+    type: Boolean,
+    default: true,
+  },
+  taskReminders: {
+    type: Boolean,
+    default: true,
+  },
+  weeklyReports: {
+    type: Boolean,
+    default: false,
+  },
+},
     avatar: {
       type: String,
       default: null,

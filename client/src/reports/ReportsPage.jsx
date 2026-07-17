@@ -9,15 +9,21 @@ import { taskService } from "../services/taskService";
 import { teamService } from "../services/teamService";
 
 import SummaryCards from "./SummaryCards";
+import { LoadingSpinner, ErrorState } from "../components/common";
+import { set } from "date-fns";
 
 const ReportsPage = () => {
   const [projects, setProjects] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   const loadData = async () => {
-    try {
+  setLoading(true);
+  setError(false);
+
+  try {
       const [projectRes, taskRes, teamRes] = await Promise.all([
         projectService.getAll(),
         taskService.getAll(),
@@ -29,11 +35,14 @@ const ReportsPage = () => {
       setMembers(teamRes.data || []);
     } catch (error) {
       console.error(error);
+      setError(true);
     } finally {
       setLoading(false);
     }
   };
-
+// if (error) {
+//   return <ErrorState onRetry={loadData} />;
+// }
   useEffect(() => {
     loadData();
   }, []);
@@ -48,11 +57,11 @@ const ReportsPage = () => {
   };
 }, [projects, tasks, members]);
 if (loading) {
-  return (
-    <div className="flex h-96 items-center justify-center">
-      Loading reports...
-    </div>
-  );
+  return <LoadingSpinner label="Loading reports..." />;
+}
+
+if (error) {
+  return <ErrorState onRetry={loadData} />;
 }
 return (
   <div className="space-y-6">

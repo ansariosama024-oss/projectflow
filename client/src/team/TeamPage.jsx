@@ -49,6 +49,13 @@ const TeamPage = () => {
   }
 };
 
+const handleRetry = async () => {
+  await Promise.all([
+    loadMembers(),
+    loadUsers(),
+  ]);
+};
+
   useEffect(() => {
   loadMembers();
   loadUsers();
@@ -129,7 +136,7 @@ const TeamPage = () => {
   };
     if (loading) return <LoadingSpinner label="Loading team..." />;
 
-  if (error) return <ErrorState onRetry={loadMembers} />;
+  if (error) return <ErrorState onRetry={handleRetry} />;
 
   return (
     <div className="space-y-6">
@@ -157,9 +164,17 @@ const TeamPage = () => {
 
       {filteredMembers.length === 0 ? (
         <EmptyState
-          title="No Team Members"
-          message="Add your first team member."
-        />
+  title={
+    search
+      ? "No Matching Members"
+      : "No Team Members"
+  }
+  message={
+    search
+      ? "Try changing your search."
+      : "Add your first team member."
+  }
+/>
       ) : (
         <div className="card-base overflow-hidden">
 

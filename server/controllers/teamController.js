@@ -55,6 +55,10 @@ export const getMemberById = asyncHandler(async (req, res) => {
     throw new AppError("Member not found", 404);
   }
 
+  if (member.createdBy.toString() !== req.user._id.toString()) {
+  throw new AppError("Not authorized to access this member", 403);
+}
+
   res.json({
     success: true,
     data: member,
@@ -69,8 +73,22 @@ export const updateMember = asyncHandler(async (req, res) => {
     throw new AppError("Member not found", 404);
   }
 
-  Object.assign(member, req.body);
+  if (member.createdBy.toString() !== req.user._id.toString()) {
+  throw new AppError("Not authorized to update this member", 403);
+}
 
+  const allowedFields = [
+  "user",
+  "role",
+  "department",
+  "status",
+];
+
+allowedFields.forEach((field) => {
+  if (field in req.body) {
+    member[field] = req.body[field];
+  }
+});
   await member.save();
 
   await member.populate("user", "name email");
@@ -89,6 +107,10 @@ export const deleteMember = asyncHandler(async (req, res) => {
   if (!member) {
     throw new AppError("Member not found", 404);
   }
+
+  if (member.createdBy.toString() !== req.user._id.toString()) {
+  throw new AppError("Not authorized to delete this member", 403);
+}
 
   await member.deleteOne();
 

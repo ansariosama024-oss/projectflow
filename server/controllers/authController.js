@@ -119,3 +119,35 @@ export const getMe = asyncHandler(async (req, res) => {
     data: { user },
   });
 });
+
+export const changePassword = asyncHandler(async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    throw new AppError(
+      "Current password and new password are required",
+      400
+    );
+  }
+
+  const user = await User.findById(req.user.id).select("+password");
+
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  const isMatch = await user.comparePassword(currentPassword);
+
+  if (!isMatch) {
+    throw new AppError("Current password is incorrect", 400);
+  }
+
+  user.password = newPassword;
+
+  await user.save();
+
+  res.json({
+    success: true,
+    message: "Password changed successfully",
+  });
+});

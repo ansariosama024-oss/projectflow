@@ -17,10 +17,17 @@ const MonthlyTaskChart = ({ tasks }) => {
   const data = months.map((month, index) => ({
     month,
     completed: tasks.filter((task) => {
-      if (task.status !== "done") return false;
+      if (task.status?.trim().toLowerCase() !== "done") {
+  return false;
+}
 
-      const date = new Date(task.updatedAt);
-      return date.getMonth() === index;
+     const date = new Date(task.updatedAt);
+
+if (isNaN(date.getTime())) {
+  return false;
+}
+
+return date.getMonth() === index;
     }).length,
   }));
 
