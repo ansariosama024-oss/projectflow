@@ -7,21 +7,25 @@ import {
   Tooltip,
 } from "recharts";
 
-const ProjectProgressChart = ({ projects, tasks }) => {
-    
+const ProjectProgressChart = ({ projects = [], tasks = [] }) => {
   const data = projects.map((project) => {
-    const projectTasks = tasks.filter(
-      (task) => task.project?._id === project._id
-    );
+    const projectTasks = tasks.filter((task) => {
+      const taskProjectId =
+        typeof task.project === "object"
+          ? task.project?._id
+          : task.project;
+
+      return String(taskProjectId) === String(project._id);
+    });
 
     const completedTasks = projectTasks.filter(
-   (task) => task.status?.trim().toLowerCase() === "done"
-);
+      (task) => task.status?.trim().toLowerCase() === "done"
+    );
 
     const progress =
-      projectTasks.length === 0
-        ? 0
-        : Math.round((completedTasks.length / projectTasks.length) * 100);
+      projectTasks.length > 0
+        ? Math.round((completedTasks.length / projectTasks.length) * 100)
+        : 0;
 
     return {
       name: project.name,
@@ -36,16 +40,15 @@ const ProjectProgressChart = ({ projects, tasks }) => {
       </h2>
 
       <div style={{ width: "100%", height: 350 }}>
-        <ResponsiveContainer>
+        <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data}>
             <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-
+            <YAxis domain={[0, 100]} />
+            <Tooltip formatter={(value) => `${value}%`} />
             <Bar
               dataKey="progress"
-              radius={[8, 8, 0, 0]}
               fill="#3b82f6"
+              radius={[8, 8, 0, 0]}
             />
           </BarChart>
         </ResponsiveContainer>

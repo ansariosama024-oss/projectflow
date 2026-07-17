@@ -22,10 +22,10 @@ const Header = ({ onMenuClick, title }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useClickOutside(() => setMenuOpen(false));
 
-  const handleLogout = () => {
-    logout();
-    navigate(ROUTES.LOGIN);
-  };
+  const handleLogout = async () => {
+  await logout();
+  navigate(ROUTES.LOGIN, { replace: true });
+};
 
   return (
     <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-neutral-200 bg-white/80 px-4 backdrop-blur-md dark:border-neutral-800 dark:bg-neutral-900/80 lg:px-6">
