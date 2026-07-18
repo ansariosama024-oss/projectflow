@@ -6,7 +6,8 @@ import { Button, Input, Modal } from "../components/ui";
 import { LoadingSpinner, EmptyState, ErrorState } from "../components/common";
 
 import { taskService } from "../services/taskService";
-import TaskFormModal from "../TaskFormModal";
+
+import TaskFormModal from "./TaskFormModal";
 
 const TasksPage = () => {
   const [tasks, setTasks] = useState([]);
